@@ -60,6 +60,14 @@
 
   /* keep it centered and avoid edge clipping on small screens */
   margin-inline: auto;
+
+  --hx-title-lines: 2;
+  --hx-subtitle-lines: 2;
+
+  --hx-title-row-h: calc(var(--hx-title) * 1.1 * var(--hx-title-lines));
+  --hx-subtitle-row-h: calc(
+    var(--hx-subtitle) * 1.25 * var(--hx-subtitle-lines)
+  );
 }
 
 /* Small-device tuning (polish only, no layout changes) */
@@ -259,18 +267,15 @@
   text-align: center;
   color: #fff;
 
-  /* deterministic internal layout */
   display: grid;
-  grid-template-rows: auto auto 1fr auto auto; /* title, subtitle, spacer, score, bar */
+  grid-template-rows: auto auto 1fr auto auto;
   justify-items: center;
-  align-content: center; /* centers the whole block vertically */
-  align-items: center; /* centers items inside their rows */
+  align-items: center;
 
-  /* IMPORTANT: use ONE gap system only */
+  /* KEY: do NOT vertically pack the whole grid (causes collisions when tight) */
+  align-content: stretch;
+
   row-gap: clamp(6px, calc(var(--hx-size) * 0.03), 10px);
-  column-gap: 0;
-
-  /* prevent any weird overflow on production */
   overflow: hidden;
 
   background: radial-gradient(
@@ -286,9 +291,14 @@
 
 .hx__title {
   font-size: var(--hx-title, 20px);
-  font-weight: bold;
+  font-weight: 800;
   line-height: 1.1;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65), 0 10px 28px rgba(0, 0, 0, 0.45);
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: var(--hx-title-row-h);
 }
 
 .hx__subtitle {
@@ -296,6 +306,11 @@
   line-height: 1.25;
   opacity: 0.95;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
+  display: -webkit-box;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: var(--hx-subtitle-row-h);
 }
 
 .hx__scoreBig {
@@ -312,21 +327,22 @@
 
 .hx__title,
 .hx__subtitle {
-  max-width: 70%;
-  text-wrap: balance;
+  max-width: 75%;
   overflow: hidden;
-  overflow-wrap: break-word;
+  overflow-wrap: anywhere; /* more robust than break-word */
+  word-break: normal;
 }
 
 /* =========================
    Risk Bar (color-matched)
 ========================= */
+
 .hx-risk {
-  width: min(170px, 65%);
+  width: min(var(--hx-risk-w, 170px), 72%);
 }
 
 .hx-risk__track {
-  height: 10px;
+  height: var(--hx-risk-h, 10px);
   border-radius: 999px;
   background: rgba(0, 0, 0, 0.7);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1),
