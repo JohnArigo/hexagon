@@ -7,13 +7,21 @@
   width: 100%;
   display: grid;
   place-items: center;
-  padding: 24px 16px;
+
+  padding: clamp(14px, 2.4vh, 28px) clamp(12px, 2.2vw, 20px);
+
+  overflow: visible;
 }
 
 .hx-grid {
-  /* MAIN TUNING CONTROLS */
-  --hx-size: 250px; /* bigger */
-  --hx-gap: 5px; /* spacing target */
+  /*
+    The whole cluster scales by deriving hx-size from viewport.
+    - Desktop stays near 250px
+    - Laptops scale down automatically
+    - Mobile scales down further but remains readable
+  */
+  --hx-size: clamp(135px, 18.5vmin, 250px);
+  --hx-gap: clamp(4px, 0.9vmin, 10px);
 
   /* Flat-top hex height ≈ 0.866 * width */
   --hx-h: calc(var(--hx-size) * 0.866);
@@ -27,24 +35,39 @@
   --hx-y-shoulder: calc(var(--hx-ystep) * 0.85);
   --hx-x-shoulder: calc(var(--hx-xstep) * 1.1);
 
+  /*
+    NEW: cluster bounds derived from your own geometry instead of multipliers.
+    This prevents “too big / clipped” on laptops + mobile.
+  */
+  --hx-cluster-w: calc((var(--hx-x-shoulder) * 2) + var(--hx-size));
+  --hx-cluster-h: calc((var(--hx-y-outer) * 2) + var(--hx-h));
+
+  /* Type + spacing scale with the tile size */
+  --hx-pad-y: clamp(12px, calc(var(--hx-size) * 0.06), 18px);
+  --hx-pad-x: clamp(10px, calc(var(--hx-size) * 0.055), 16px);
+
+  --hx-title: clamp(14px, calc(var(--hx-size) * 0.08), 20px);
+  --hx-subtitle: clamp(11px, calc(var(--hx-size) * 0.055), 14px);
+  --hx-score: clamp(30px, calc(var(--hx-size) * 0.176), 44px);
+
+  --hx-risk-w: clamp(132px, calc(var(--hx-size) * 0.68), 170px);
+  --hx-risk-h: clamp(8px, calc(var(--hx-size) * 0.04), 10px);
+
   position: relative;
 
-  width: calc(var(--hx-size) * 3.9);
-  height: calc(var(--hx-h) * 4);
+  width: min(var(--hx-cluster-w), 96vw);
+  height: min(var(--hx-cluster-h), 78svh);
+
+  /* keep it centered and avoid edge clipping on small screens */
+  margin-inline: auto;
 }
 
-/* Responsive scaling */
-@media (max-width: 900px) {
-  .hx-grid {
-    --hx-size: 175px;
-    --hx-gap: 10px;
-  }
-}
-
+/* Small-device tuning (polish only, no layout changes) */
 @media (max-width: 560px) {
   .hx-grid {
-    --hx-size: 145px;
-    --hx-gap: 8px;
+    /* slightly smaller top cap on very narrow screens */
+    --hx-size: clamp(125px, 19.5vmin, 190px);
+    height: min(var(--hx-cluster-h), 72svh);
   }
 }
 
@@ -232,7 +255,7 @@
   position: relative;
   z-index: 1;
   height: 100%;
-  padding: 18px 16px;
+  padding: var(--hx-pad-y, 18px) var(--hx-pad-x, 16px);
   text-align: center;
   color: #fff;
   display: grid;
@@ -254,38 +277,36 @@
 }
 
 .hx__title {
-  font-size: 20px;
+  font-size: var(--hx-title, 20px);
   font-weight: 800;
   line-height: 1.1;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65), 0 10px 28px rgba(0, 0, 0, 0.45);
 }
 
 .hx__subtitle {
-  font-size: 14px;
+  font-size: var(--hx-subtitle, 14px);
   line-height: 1.25;
   opacity: 0.95;
   text-shadow: 0 1px 4px rgba(0, 0, 0, 0.55);
 }
+
+.hx__scoreBig {
+  font-weight: 900;
+  font-size: var(--hx-score, 44px);
+  line-height: 1;
+  letter-spacing: 0.5px;
+
+  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45),
+    0 0 18px rgb(var(--hx-score-rgb) / 0.45);
+
+  color: rgb(var(--hx-score-rgb) / 0.95);
+}
+
 .hx__title,
 .hx__subtitle {
   max-width: 90%;
   overflow-wrap: break-word;
   text-wrap: balance;
-}
-
-/* BIG SCORE (replaces stars + small badge) */
-.hx__scoreBig {
-  font-weight: 900;
-  font-size: 44px;
-  line-height: 1;
-  letter-spacing: 0.5px;
-
-  /* subtle color emphasis */
-  text-shadow: 0 10px 30px rgba(0, 0, 0, 0.45),
-    0 0 18px rgb(var(--hx-score-rgb) / 0.45);
-
-  /* optional: slightly tint the number itself */
-  color: rgb(var(--hx-score-rgb) / 0.95);
 }
 
 /* =========================

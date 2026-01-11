@@ -4,6 +4,9 @@
   position: relative;
   background: #05070c; /* true base black-blue */
   overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .app-content {
