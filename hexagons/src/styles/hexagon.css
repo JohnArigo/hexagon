@@ -46,8 +46,8 @@
   --hx-pad-y: clamp(12px, calc(var(--hx-size) * 0.06), 18px);
   --hx-pad-x: clamp(10px, calc(var(--hx-size) * 0.055), 16px);
 
-  --hx-title: clamp(18px, calc(var(--hx-size) * 0.08), 20px);
-  --hx-subtitle: clamp(11px, calc(var(--hx-size) * 0.055), 14px);
+  --hx-title: clamp(14px, calc(var(--hx-size) * 0.08), 20px);
+  --hx-subtitle: clamp(9px, calc(var(--hx-size) * 0.055), 14px);
   --hx-score: clamp(30px, calc(var(--hx-size) * 0.176), 44px);
 
   --hx-risk-w: clamp(132px, calc(var(--hx-size) * 0.68), 170px);
@@ -258,12 +258,19 @@
   padding: var(--hx-pad-y, 18px) var(--hx-pad-x, 16px);
   text-align: center;
   color: #fff;
+
+  /* deterministic internal layout */
   display: grid;
-  grid-template-rows: auto auto 1fr auto auto; /* title, subtitle, spacer, score, bar/cta */
+  grid-template-rows: auto auto 1fr auto auto; /* title, subtitle, spacer, score, bar */
   justify-items: center;
-  align-items: start;
+  align-content: center; /* centers the whole block vertically */
+  align-items: center; /* centers items inside their rows */
+
+  /* IMPORTANT: use ONE gap system only */
   row-gap: clamp(6px, calc(var(--hx-size) * 0.03), 10px);
-  gap: 10px;
+  column-gap: 0;
+
+  /* prevent any weird overflow on production */
   overflow: hidden;
 
   background: radial-gradient(
@@ -274,12 +281,11 @@
     transparent 100%
   );
 
-  /* keep 3D pop */
   transform: translateZ(60px) scale(0.94);
 }
 
 .hx__title {
-  font-size: var(--hx-title, 22px);
+  font-size: var(--hx-title, 20px);
   font-weight: bold;
   line-height: 1.1;
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.65), 0 10px 28px rgba(0, 0, 0, 0.45);
