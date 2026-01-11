@@ -1,4 +1,5 @@
 import Hexagon, { type HexagonFunction } from "./components/Hexagon";
+import "./App.css";
 // "https://images.unsplash.com/photo-1591076482161-42ce6da69f67?auto=format&fit=crop&w=1200&q=80",
 // "https://images.unsplash.com/photo-1581092580497-e0d23cbdf1dc?auto=format&fit=crop&w=1200&q=80", // analyst / briefing
 // "https://images.unsplash.com/photo-1598550476439-6847785fcea6?auto=format&fit=crop&w=1200&q=80", // briefing / review
@@ -71,13 +72,19 @@ const fakeFunctions: HexagonFunction[] = [
 
 export default function App() {
   return (
-    <Hexagon
-      functions={fakeFunctions}
-      showLegend
-      legendLabel="Threat score (1.0 low → 5.0 high)"
-      onHexClick={(fn, index) => {
-        console.log("Hex clicked:", fn.id, "at index", index);
-      }}
-    />
+    <div className="app-shell">
+      <div className="app-bg" aria-hidden="true" />
+
+      <main className="app-content">
+        <Hexagon
+          functions={fakeFunctions}
+          showLegend
+          legendLabel="Threat score (1.0 low → 5.0 high)"
+          onHexClick={(fn, index) => {
+            console.log("Hex clicked:", fn.id, "at index", index);
+          }}
+        />
+      </main>
+    </div>
   );
 }
